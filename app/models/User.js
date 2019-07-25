@@ -7,6 +7,21 @@ const User = db.define('user', {
     },
     password: {
         type: Sequelize.STRING
+    },
+    firstname: {
+        type: Sequelize.STRING
+    },
+    lastname: {
+        type: Sequelize.STRING
+    },
+    email: {
+        type: Sequelize.STRING
+    },
+    phonenumber: {
+        type: Sequelize.STRING
+    },
+    imagepath: {
+        type: Sequelize.TEXT
     }
 })
 

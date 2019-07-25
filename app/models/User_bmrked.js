@@ -10,4 +10,4 @@ const User_bmrked = db.define('users_bmrked', {
     }
 })
 
-module.exports = User_bmrked
+module.exports = User_bmrked;

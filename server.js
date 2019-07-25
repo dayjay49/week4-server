@@ -1,23 +1,52 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-app.use(bodyParser.json());
 const User = require('./app/models/User');
 const config = require('./app/config/token_config')
 const jwt = require('jsonwebtoken');
 // const middleware = require('./middleware');
+const fs = require('fs')
+// const path = require('path')
+// const multer = require('multer')
+
+// // Set Storage Engine
+// var storage = multer.diskStorage({
+// 	destination: function(req, file, cb) { //isn't this just '/uploads/' ?
+// 		cb(null, './my_uploads/')
+// 	},
+// 	filename: function(req, file, cb) {
+// 		// var originalname = file.originalname
+// 		// var extension = originalname.split(".")
+// 		// filename = Date.now() + '.' + extension[extension.length - 1]
+// 		cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+// 	}
+// })
+
+// //Initialize Upload variable
+// const upload = multer({
+// 	storage: storage,
+// 	dest: './my_uploads/'
+// })
 
 // Body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Database
-const db = require('./app/config/db_config.js');
+// getting imagefile ? (o.O) ;;
+app.get('/my_uploads/:name', function (req, res) {
+    var filename = req.params.name;
+    fs.exists(__dirname+'/my_uploads/'+filename, function (exists) {
+      if (exists) {
+        fs.readFile(__dirname+'/my_uploads/'+filename, function (err, data) {
+          res.end(data);
+        });
+      } else {
+        res.end('file does not exists');
+      }
+    })
+  });
 
-// // force: true will drop the table if it already exists
-// db.sequelize.sync({force: true}).then(() => {
-//     console.log('Drop and Resync with { force: true }');
-//   });
+app.use('/my_uploads', express.static('my_uploads'));
 
 // Login
 app.post('/login', (req, res) => {
@@ -36,7 +65,7 @@ app.post('/login', (req, res) => {
         });
         // return the JWT token for the future API calls
         res.json({success: true, message: 'Authentication successful!',
-            token: token})
+            token: token, user})
         })
     .catch(err => res.status(400).json({
         success: false,
